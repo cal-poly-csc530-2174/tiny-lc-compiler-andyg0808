@@ -17,6 +17,9 @@
              (convert cond)
              (convert then)
              (convert else))]
+    [`(println ,m)
+     (format "(console.log(~a))"
+             (convert m))]
     [x      (cond
               [(number? x) (number->string x)]
               [(symbol? x) (symbol->string x)]
