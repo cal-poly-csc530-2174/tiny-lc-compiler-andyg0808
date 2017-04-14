@@ -1,25 +1,25 @@
 #!/usr/bin/env racket
-#lang racket/base
+#lang racket
 (require rackunit)
 (require racket/match)
 (require racket/format)
 (define (convert x)
   (match x
     [`(λ (,id) ,lc) (format "function(~a) {return (~a)}" id (convert lc))]
+    [`(println ,m)
+     (format "(console.log(~a))"
+             (convert m))]
+    [`(ifleq0 ,guard ,then ,other)
+     (format "(((~a) <= 0) ? (~a) : (~a))"
+             (convert guard)
+             (convert then)
+             (convert other))]
     [`(,fun ,arg) (format "(~a)(~a)" (convert fun) (convert arg))]
     [`(,op ,l ,r) #:when (lambda ()
                            (case (op)
                              ((+ *) #t)
                              (else #f)))
-                  (format "(~a ~a ~a)" (convert l) op (convert r))]
-    [`(ifleq0 ,cond ,then ,else)
-     (format "if ((~a) <= 0) {~a} else {~a}"
-             (convert cond)
-             (convert then)
-             (convert else))]
-    [`(println ,m)
-     (format "(console.log(~a))"
-             (convert m))]
+     (format "((~a) ~a (~a))" (convert l) op (convert r))]
     [x      (cond
               [(number? x) (number->string x)]
               [(symbol? x) (symbol->string x)]
