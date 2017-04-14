@@ -43,4 +43,7 @@
                 "function(a) {return ((function(x) {return ((x + 2))})(if (((function(x) {return ((42 * x))})(a)) <= 0) {(4 * a)} else {((function(f) {return ((11 * f))})(a) + 3)}))}")
   (check-exn #px"Invalid syntax" (lambda () (convert '()))))
 (module+ main
-  (display (string-append (convert (read)) "\n")))
+  (display (string-append
+            (convert (file->value
+                      (sequence-ref (current-command-line-arguments) 0)))
+            "\n")))
